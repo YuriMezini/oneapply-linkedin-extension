@@ -1,0 +1,188 @@
+/* OneApply – LinkedIn-native styles */
+
+/* ── Floating button ── */
+#oneapply-float {
+  position: fixed !important;
+  bottom: 24px !important;
+  right: 24px !important;
+  z-index: 2147483646 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  padding: 10px 20px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  color: white !important;
+  background: #0a66c2 !important;
+  border: none !important;
+  border-radius: 24px !important;
+  cursor: pointer !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+  box-shadow: 0 4px 12px rgba(10,102,194,0.4) !important;
+  transition: background 0.15s !important;
+  white-space: nowrap !important;
+}
+#oneapply-float:hover {
+  background: #004182 !important;
+}
+
+/* ── Inline wrapper ── */
+#oneapply-btn-wrap {
+  padding: 8px 0;
+  margin: 4px 0;
+}
+
+/* ── Inline button ── */
+#oneapply-inline-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #0a66c2;
+  background: transparent;
+  border: 1.5px solid #0a66c2;
+  border-radius: 24px;
+  cursor: pointer;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+#oneapply-inline-btn:hover {
+  background: rgba(10,102,194,0.08);
+}
+
+/* ── Success states ── */
+#oneapply-float.saved,
+#oneapply-inline-btn.saved {
+  background: #057642 !important;
+  border-color: #057642 !important;
+  color: white !important;
+}
+
+/* ── Modal overlay ── */
+#oneapply-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+.oa-backdrop {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+.oa-box {
+  position: relative;
+  background: white;
+  border-radius: 10px;
+  padding: 24px;
+  width: 420px;
+  max-width: 92vw;
+  max-height: 88vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  animation: oaPop 0.15s ease;
+}
+@keyframes oaPop {
+  from { opacity:0; transform:scale(0.97) translateY(-6px); }
+  to   { opacity:1; transform:scale(1) translateY(0); }
+}
+.oa-close {
+  position: absolute; top: 12px; right: 12px;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: #f3f2ef; border: none; cursor: pointer;
+  color: #666; font-size: 12px;
+  display: flex; align-items: center; justify-content: center;
+}
+.oa-close:hover { background: #e8e7e4; }
+
+/* ── Modal header ── */
+.oa-mhead {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 16px; padding-bottom: 14px;
+  border-bottom: 1px solid #e8e7e4;
+}
+.oa-mavatar {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: #e8e7e4; border: 2px solid #c9c6c2;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; overflow: hidden; flex-shrink: 0;
+}
+.oa-mavatar img { width:100%; height:100%; object-fit:cover; }
+.oa-mname { font-size: 16px; font-weight: 600; color: #1d2226; }
+.oa-mco   { font-size: 13px; color: #666; margin-top: 2px; }
+.oa-minfo { font-size: 12px; color: #0a66c2; margin-top: 2px; }
+
+/* ── Question labels ── */
+.oa-qlabel {
+  font-size: 12px; font-weight: 600;
+  color: #1d2226; margin: 14px 0 8px;
+}
+
+/* ── Question buttons ── */
+.oa-qrow { display: flex; gap: 6px; flex-wrap: wrap; }
+.oa-qbtn {
+  flex: 1; min-width: 80px; padding: 8px 6px;
+  background: white; border: 1.5px solid #c9c6c2;
+  border-radius: 4px; cursor: pointer; font-family: inherit;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  font-size: 13px; font-weight: 600; color: #1d2226;
+  transition: all 0.12s;
+}
+.oa-qbtn span { font-size: 10px; font-weight: 400; color: #999; }
+.oa-qbtn:hover { border-color: #0a66c2; }
+.oa-qbtn.active { border-color: #0a66c2; background: #eef3fb; color: #0a66c2; }
+
+/* ── Checkboxes ── */
+.oa-checks { display: flex; flex-direction: column; gap: 8px; }
+.oa-checks label {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: #1d2226; cursor: pointer;
+}
+.oa-checks input[type="checkbox"] {
+  width: 16px; height: 16px; accent-color: #0a66c2; cursor: pointer;
+}
+
+/* ── Note input ── */
+.oa-note {
+  width: 100%; margin-top: 14px; padding: 8px 12px;
+  background: white; border: 1.5px solid #c9c6c2;
+  border-radius: 4px; font-size: 13px; color: #1d2226;
+  font-family: inherit; outline: none; box-sizing: border-box;
+}
+.oa-note:focus { border-color: #0a66c2; }
+.oa-note::placeholder { color: #aaa; }
+
+/* ── Score preview ── */
+.oa-score-row {
+  display: flex; align-items: center; gap: 12px;
+  margin-top: 14px; padding: 12px 14px;
+  background: #f3f2ef; border-radius: 8px;
+}
+.oa-score-circle {
+  width: 48px; height: 48px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 700; flex-shrink: 0;
+}
+.ris-strong { background: #d4edda; color: #057642; }
+.ris-warm   { background: #fff3cd; color: #b45309; }
+.ris-cold   { background: #fde8e8; color: #c0392b; }
+.oa-score-lbl { font-size: 13px; font-weight: 600; color: #1d2226; }
+
+/* ── Save button ── */
+.oa-save-btn {
+  width: 100%; margin-top: 14px; padding: 11px;
+  background: #0a66c2; color: white;
+  font-size: 15px; font-weight: 600;
+  border: none; border-radius: 24px;
+  cursor: pointer; font-family: inherit;
+  transition: background 0.15s;
+}
+.oa-save-btn:hover:not(:disabled) { background: #004182; }
+.oa-save-btn:disabled { opacity: 0.4; cursor: not-allowed; }

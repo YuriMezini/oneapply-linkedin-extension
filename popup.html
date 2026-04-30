@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      width: 240px;
+      background: linear-gradient(160deg, #0a1930, #0f2653);
+      color: #e2e8f0; padding: 20px;
+    }
+    .top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .badge {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, #1e40af, #16a34a);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 900; color: white;
+      box-shadow: 0 0 16px rgba(22,163,74,0.4);
+    }
+    .brand { font-size: 18px; font-weight: 800; }
+    .brand span { color: #4ade80; }
+    .tagline {
+      font-size: 11px; color: rgba(255,255,255,0.4);
+      margin-bottom: 16px; letter-spacing: 0.1px;
+    }
+    .tagline em { color: #4ade80; font-style: normal; }
+    button {
+      width: 100%; padding: 10px;
+      background: linear-gradient(135deg, #1e40af, #2563eb);
+      color: white; border: none; border-radius: 8px;
+      font-size: 13px; font-weight: 700; cursor: pointer;
+      transition: opacity 0.2s;
+      box-shadow: 0 3px 12px rgba(30,64,175,0.4);
+    }
+    button:hover { opacity: 0.88; }
+    .hint {
+      margin-top: 12px; font-size: 10px;
+      color: rgba(255,255,255,0.25); text-align: center; line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="top">
+    <div class="badge">1</div>
+    <div class="brand">One<span>Apply</span></div>
+  </div>
+  <div class="tagline">It only takes <em>one</em> right application.</div>
+  <button id="open-btn">Open Side Panel</button>
+  <div class="hint">
+    On LinkedIn profiles → <em>Save Contact</em><br/>
+    On job listings → <em>Track This Job</em>
+  </div>
+  <script>
+    document.getElementById("open-btn").addEventListener("click", () => {
+      chrome.sidePanel.open({ windowId: chrome.windows.WINDOW_ID_CURRENT });
+      window.close();
+    });
+  </script>
+</body>
+</html>

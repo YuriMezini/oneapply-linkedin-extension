@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OneApply</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* LinkedIn colors */
+    :root {
+      --li-blue:   #0a66c2;
+      --li-blue2:  #004182;
+      --li-green:  #057642;
+      --li-bg:     #f3f2ef;
+      --li-white:  #ffffff;
+      --li-border: #e8e7e4;
+      --li-text:   #1d2226;
+      --li-muted:  #666666;
+      --li-dim:    #999999;
+      --li-amber:  #b45309;
+      --li-red:    #c0392b;
+    }
+
+    body {
+      background: var(--li-bg);
+      color: var(--li-text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 14px;
+      min-width: 360px;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--li-white);
+      border-bottom: 1px solid var(--li-border);
+      padding: 12px 16px 0;
+    }
+    .hrow {
+      display: flex; align-items: center;
+      justify-content: space-between; margin-bottom: 10px;
+    }
+    .logo { display: flex; align-items: center; gap: 8px; }
+    .logo-badge {
+      width: 32px; height: 32px;
+      background: var(--li-blue);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 700; color: white;
+    }
+    .logo-name { font-size: 16px; font-weight: 700; color: var(--li-text); }
+    .logo-name span { color: var(--li-blue); }
+    .tagline { font-size: 11px; color: var(--li-muted); margin-bottom: 10px; }
+
+    .hstats { display: flex; gap: 0; }
+    .hstat { text-align: center; padding: 0 10px;
+      border-left: 1px solid var(--li-border); }
+    .hstat:first-child { border-left: none; padding-left: 0; }
+    .hstat-val { font-size: 18px; font-weight: 700;
+      color: var(--li-blue); line-height: 1; }
+    .hstat-lbl { font-size: 9px; text-transform: uppercase;
+      letter-spacing: 0.5px; color: var(--li-muted); margin-top: 2px; }
+
+    /* ── Tabs ── */
+    .tabs { display: flex; }
+    .tab {
+      flex: 1; padding: 8px 4px;
+      background: none; border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--li-muted);
+      font-size: 12px; font-weight: 600;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 4px;
+      transition: all 0.14s; white-space: nowrap;
+    }
+    .tab:hover { color: var(--li-text); }
+    .tab.active { color: var(--li-blue); border-bottom-color: var(--li-blue); }
+
+    .tbadge {
+      background: var(--li-bg); color: var(--li-muted);
+      border-radius: 8px; padding: 1px 5px; font-size: 9px; font-weight: 700;
+    }
+    .tab.active .tbadge { background: #dce6f1; color: var(--li-blue); }
+
+    /* ── Panels ── */
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* ── Search ── */
+    .sbar {
+      padding: 8px 12px;
+      background: var(--li-white); border-bottom: 1px solid var(--li-border);
+    }
+    .sbar input {
+      width: 100%; padding: 8px 12px 8px 32px;
+      background: var(--li-bg); border: 1px solid var(--li-border);
+      border-radius: 4px; color: var(--li-text); font-size: 13px; outline: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: 10px center;
+    }
+    .sbar input:focus { border-color: var(--li-blue); outline: none; }
+    .sbar input::placeholder { color: var(--li-dim); }
+
+    /* ── Contacts Table ── */
+    .table-toolbar {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--li-white); border-bottom: 1px solid var(--li-border);
+      gap: 8px;
+    }
+    .toolbar-btns { display: flex; gap: 6px; }
+
+    .tbtn {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 6px 14px; border-radius: 24px; border: none;
+      font-size: 12px; font-weight: 600; cursor: pointer;
+      transition: background 0.15s; white-space: nowrap;
+    }
+    .tbtn.csv    { background: var(--li-blue); color: white; }
+    .tbtn.csv:hover { background: var(--li-blue2); }
+    .tbtn.sheets { background: white; color: var(--li-blue);
+      border: 1.5px solid var(--li-blue); }
+    .tbtn.sheets:hover { background: #eef3fb; }
+
+    .table-wrap { overflow-x: auto; background: var(--li-white); }
+
+    table.contacts-table {
+      width: 100%; min-width: 680px;
+      border-collapse: collapse; font-size: 12px;
+    }
+    table.contacts-table thead {
+      background: var(--li-bg);
+      position: sticky; top: 0; z-index: 2;
+    }
+    table.contacts-table th {
+      padding: 8px 10px; text-align: left;
+      font-size: 11px; font-weight: 700;
+      color: var(--li-muted);
+      border-bottom: 1.5px solid var(--li-border);
+      border-right: 1px solid var(--li-border);
+      white-space: nowrap; cursor: pointer; user-select: none;
+    }
+    table.contacts-table th:hover { background: #e8e7e4; }
+    table.contacts-table th:last-child { border-right: none; }
+    table.contacts-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--li-bg);
+      border-right: 1px solid #f5f4f2;
+      vertical-align: middle;
+      max-width: 150px; overflow: hidden;
+      text-overflow: ellipsis; white-space: nowrap;
+      color: var(--li-text);
+    }
+    table.contacts-table td:last-child { border-right: none; }
+    table.contacts-table tr:hover td { background: #f9f8f6; }
+
+    .ris-chip {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 36px; height: 36px; border-radius: 50%;
+      font-size: 12px; font-weight: 700;
+    }
+    .ris-strong { background: #d4edda; color: #057642; }
+    .ris-warm   { background: #fff3cd; color: #b45309; }
+    .ris-cold   { background: #fde8e8; color: #c0392b; }
+
+    .badge { border-radius: 20px; padding: 2px 8px;
+      font-size: 11px; font-weight: 600; white-space: nowrap; }
+    .badge-strong { background: #d4edda; color: #057642; }
+    .badge-warm   { background: #fff3cd; color: #b45309; }
+    .badge-cold   { background: #fde8e8; color: #c0392b; }
+
+    .td-name  { font-weight: 600; color: var(--li-text); }
+    .td-link  { color: var(--li-blue); text-decoration: none; font-size: 11px; }
+    .td-link:hover { text-decoration: underline; }
+    .td-email { color: var(--li-blue); font-size: 11px; }
+    .td-muted { color: var(--li-muted); }
+
+    .btn-row-del {
+      background: none; border: none; cursor: pointer;
+      color: var(--li-dim); font-size: 13px; padding: 2px 5px; border-radius: 4px;
+    }
+    .btn-row-del:hover { color: var(--li-red); background: #fde8e8; }
+
+    /* ── Jobs ── */
+    #jobs-list { padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
+
+    .job-card {
+      background: var(--li-white); border: 1px solid var(--li-border);
+      border-radius: 8px; overflow: hidden; transition: border-color 0.15s;
+    }
+    .job-card:hover { border-color: #aac4e4; }
+    .job-card.expanded { border-color: var(--li-blue); }
+
+    .job-header { padding: 12px 14px; cursor: pointer; user-select: none; }
+    .job-top { display: flex; align-items: flex-start;
+      justify-content: space-between; gap: 6px; margin-bottom: 6px; }
+    .job-title { font-size: 14px; font-weight: 600; color: var(--li-text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .job-company { font-size: 13px; color: var(--li-blue); margin-top: 2px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .job-meta { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+
+    .sp { display: inline-flex; align-items: center;
+      padding: 2px 8px; border-radius: 20px;
+      font-size: 11px; font-weight: 600; }
+    .sp-saved    { background: #f3f2ef; color: #666; }
+    .sp-applied  { background: #dce6f1; color: #0a66c2; }
+    .sp-interview{ background: #fff3cd; color: #b45309; }
+    .sp-offer    { background: #d4edda; color: #057642; }
+    .sp-passed   { background: #fde8e8; color: #c0392b; }
+    .match-pill  { background: #d4edda; color: #057642;
+      padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+    .job-date { font-size: 11px; color: var(--li-dim); margin-left: auto; }
+
+    .btn-del { background: none; border: none; cursor: pointer;
+      color: var(--li-dim); font-size: 13px; padding: 2px 4px;
+      border-radius: 4px; flex-shrink: 0; }
+    .btn-del:hover { color: var(--li-red); background: #fde8e8; }
+
+    .job-detail { padding: 0 14px 14px; border-top: 1px solid var(--li-border);
+      display: none; animation: fd 0.13s ease; }
+    .job-card.expanded .job-detail { display: block; }
+    @keyframes fd { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
+
+    .det-section { margin-top: 12px; }
+    .det-label { font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.6px; color: var(--li-dim); margin-bottom: 6px; }
+
+    .status-sel { width: 100%; padding: 6px 10px;
+      background: var(--li-bg); border: 1px solid var(--li-border);
+      border-radius: 4px; color: var(--li-text); font-size: 13px; outline: none; }
+    .status-sel:focus { border-color: var(--li-blue); }
+
+    .ref-list { display: flex; flex-direction: column; gap: 6px; }
+    .ref-card { display: flex; align-items: center; gap: 10px;
+      padding: 9px 12px; background: var(--li-bg);
+      border: 1px solid var(--li-border); border-radius: 6px;
+      text-decoration: none; color: inherit; transition: border-color 0.13s; }
+    .ref-card:hover { border-color: var(--li-blue); }
+    .ref-info { flex: 1; min-width: 0; }
+    .ref-name { font-size: 13px; font-weight: 600; white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis; }
+    .ref-role { font-size: 11px; color: var(--li-muted); margin-top: 2px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ref-contact { font-size: 11px; color: var(--li-blue); margin-top: 1px; }
+
+    /* ── AI section (optional) ── */
+    .ai-section { margin-top: 12px; }
+    .ai-toggle {
+      font-size: 12px; color: var(--li-blue);
+      background: none; border: none; cursor: pointer; padding: 0;
+      text-decoration: underline; font-family: inherit;
+    }
+    .ai-body { display: none; margin-top: 8px; }
+    .ai-body.open { display: block; }
+
+    .ai-key-row {
+      display: flex; gap: 8px; align-items: center;
+      margin-bottom: 8px; flex-wrap: wrap;
+    }
+    .ai-key-input {
+      flex: 1; min-width: 0; padding: 7px 10px;
+      background: var(--li-bg); border: 1px solid var(--li-border);
+      border-radius: 4px; color: var(--li-text);
+      font-size: 12px; font-family: "Menlo", monospace; outline: none;
+    }
+    .ai-key-input:focus { border-color: var(--li-blue); }
+    .ai-key-input::placeholder { color: var(--li-dim); }
+
+    .ai-btn {
+      width: 100%; padding: 9px;
+      background: var(--li-blue); border: none;
+      border-radius: 24px; color: white;
+      font-size: 13px; font-weight: 600;
+      cursor: pointer; font-family: inherit;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .ai-btn:hover { background: var(--li-blue2); }
+    .ai-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .ai-output { display: none; margin-top: 10px;
+      background: #f0f7ff; border: 1px solid #bfdbfe;
+      border-radius: 8px; padding: 12px;
+      font-size: 12px; line-height: 1.55; }
+    .ai-output.visible { display: block; }
+
+    .ai-st { font-size: 11px; font-weight: 700; color: var(--li-blue);
+      margin-bottom: 6px; margin-top: 10px; }
+    .ai-st:first-child { margin-top: 0; }
+    .ai-person { background: white; border-radius: 6px;
+      padding: 8px; margin-bottom: 5px; border: 1px solid var(--li-border); }
+    .ai-pname { font-weight: 600; font-size: 13px; }
+    .ai-preason { color: var(--li-muted); font-size: 12px; margin-top: 3px; line-height: 1.5; }
+    .ai-msg { background: white; border-radius: 6px; padding: 10px;
+      font-size: 12px; line-height: 1.6;
+      border-left: 3px solid var(--li-blue);
+      white-space: pre-wrap; word-break: break-word; }
+    .ai-copy { margin-top: 7px; padding: 5px 14px;
+      background: var(--li-bg); border: 1px solid var(--li-border);
+      border-radius: 24px; color: var(--li-blue);
+      font-size: 12px; font-weight: 600; cursor: pointer; }
+    .ai-copy:hover { background: #dce6f1; }
+    .ai-spinner { display: inline-block; width: 13px; height: 13px;
+      border: 2px solid rgba(255,255,255,0.3); border-top-color: white;
+      border-radius: 50%; animation: spin 0.7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .notes-ta { width: 100%; padding: 8px 10px;
+      background: var(--li-bg); border: 1px solid var(--li-border);
+      border-radius: 4px; color: var(--li-text); font-size: 13px;
+      font-family: inherit; resize: vertical; min-height: 55px; outline: none; }
+    .notes-ta:focus { border-color: var(--li-blue); }
+    .notes-ta::placeholder { color: var(--li-dim); }
+
+    .btn-sm { margin-top: 5px; padding: 5px 14px;
+      background: var(--li-bg); border: 1px solid var(--li-border);
+      border-radius: 24px; color: var(--li-blue);
+      font-size: 12px; font-weight: 600; cursor: pointer; }
+    .btn-sm:hover { background: #dce6f1; }
+
+    .open-link { display: inline-flex; align-items: center; gap: 4px;
+      padding: 5px 14px; background: none; border: 1px solid var(--li-border);
+      border-radius: 24px; color: var(--li-muted);
+      font-size: 12px; text-decoration: none; }
+    .open-link:hover { border-color: var(--li-blue); color: var(--li-blue); }
+
+    /* ── Settings ── */
+    #settings-panel { padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+    .scard { background: var(--li-white); border: 1px solid var(--li-border);
+      border-radius: 8px; padding: 14px; }
+    .scard-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .scard-sub { font-size: 12px; color: var(--li-muted); line-height: 1.5; margin-bottom: 10px; }
+    .sbtn { padding: 7px 16px; border-radius: 24px; border: none;
+      font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+    .sbtn.prim { background: var(--li-blue); color: white; }
+    .sbtn.prim:hover { background: var(--li-blue2); }
+    .sbtn.sec  { background: var(--li-white); color: var(--li-blue);
+      border: 1.5px solid var(--li-blue); }
+    .sbtn.sec:hover { background: #eef3fb; }
+    .sbtn.danger { background: #fde8e8; color: var(--li-red);
+      border: 1px solid #f5c6c6; }
+    .sbtn.danger:hover { background: #fbd0d0; }
+    .sgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+
+    /* ── Empty state ── */
+    .empty { text-align: center; padding: 34px 18px; color: var(--li-muted); }
+    .empty .big { font-size: 36px; margin-bottom: 8px; }
+    .empty p { font-size: 13px; line-height: 1.65; }
+    .empty strong { color: var(--li-blue); }
+
+    /* ── Toast ── */
+    #oa-toast {
+      position: fixed; bottom: 16px; left: 50%;
+      transform: translateX(-50%) translateY(50px);
+      background: #1d2226; color: white;
+      padding: 8px 18px; border-radius: 6px;
+      font-size: 13px; font-weight: 600;
+      transition: transform 0.22s ease; z-index: 9999; white-space: nowrap;
+    }
+    #oa-toast.show { transform: translateX(-50%) translateY(0); }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #c9c6c2; border-radius: 2px; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="hrow">
+      <div class="logo">
+        <div class="logo-badge">1</div>
+        <span class="logo-name">One<span>Apply</span></span>
+      </div>
+      <div class="hstats">
+        <div class="hstat">
+          <div class="hstat-val" id="stat-jobs">0</div>
+          <div class="hstat-lbl">Jobs</div>
+        </div>
+        <div class="hstat">
+          <div class="hstat-val" id="stat-contacts">0</div>
+          <div class="hstat-lbl">Contacts</div>
+        </div>
+        <div class="hstat">
+          <div class="hstat-val" id="stat-matches">0</div>
+          <div class="hstat-lbl">Matches</div>
+        </div>
+      </div>
+    </div>
+    <div class="tagline">It only takes one right application.</div>
+    <div class="tabs">
+      <button class="tab active" data-tab="contacts">
+        👤 Contacts <span class="tbadge" id="badge-contacts">0</span>
+      </button>
+      <button class="tab" data-tab="jobs">
+        💼 Jobs <span class="tbadge" id="badge-jobs">0</span>
+      </button>
+      <button class="tab" data-tab="settings">⚙ Settings</button>
+    </div>
+  </header>
+
+  <!-- CONTACTS TABLE -->
+  <div id="contacts-panel" class="panel active">
+    <div class="table-toolbar">
+      <div style="flex:1">
+        <input id="contacts-search" style="width:100%;padding:7px 10px 7px 30px;background:#f3f2ef;border:1px solid #e8e7e4;border-radius:4px;font-size:12px;outline:none;background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2214%22 height=%2214%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23999%22 stroke-width=%222%22%3E%3Ccircle cx=%2211%22 cy=%2211%22 r=%228%22/%3E%3Cpath d=%22m21 21-4.35-4.35%22/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:8px center" placeholder="Search contacts…" />
+      </div>
+      <div class="toolbar-btns">
+        <button class="tbtn csv" id="export-csv">⬇ CSV</button>
+        <button class="tbtn sheets" id="copy-sheets">📋 Sheets</button>
+      </div>
+    </div>
+    <div class="table-wrap" id="table-wrap">
+      <table class="contacts-table">
+        <thead>
+          <tr>
+            <th data-col="ris">RIS ↕</th>
+            <th data-col="name">Name ↕</th>
+            <th data-col="currentTitle">Title</th>
+            <th data-col="company">Company ↕</th>
+            <th data-col="email">Email</th>
+            <th data-col="phone">Phone</th>
+            <th data-col="note">Note</th>
+            <th data-col="ris">Match</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="contacts-tbody"></tbody>
+      </table>
+    </div>
+    <div id="contacts-empty" class="empty" style="display:none">
+      <div class="big">👤</div>
+      <p>No contacts saved yet.<br/>Visit a LinkedIn profile and click<br/><strong>Save Contact</strong>.</p>
+    </div>
+  </div>
+
+  <!-- JOBS -->
+  <div id="jobs-panel" class="panel">
+    <div class="sbar">
+      <input id="jobs-search" placeholder="Search jobs or companies…" />
+    </div>
+    <div id="jobs-list"></div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div id="settings-panel" class="panel">
+    <div class="scard">
+      <div class="scard-title">📤 Export Data</div>
+      <div class="sgrid">
+        <button class="sbtn prim" id="s-export-contacts">⬇ Contacts CSV</button>
+        <button class="sbtn prim" id="s-export-jobs">⬇ Jobs CSV</button>
+        <button class="sbtn sec" id="s-export-json">⬇ Full Backup</button>
+        <label class="sbtn sec" for="s-import-json" style="display:flex;align-items:center;justify-content:center;cursor:pointer">⬆ Import</label>
+        <input type="file" id="s-import-json" accept=".json" style="display:none" />
+      </div>
+    </div>
+    <div class="scard">
+      <div class="scard-title">🗑 Clear Data</div>
+      <div class="sgrid">
+        <button class="sbtn danger" id="clear-jobs">Clear All Jobs</button>
+        <button class="sbtn danger" id="clear-contacts">Clear All Contacts</button>
+      </div>
+    </div>
+    <div class="scard" style="background:transparent;border:none">
+      <div style="font-size:12px;color:#666;text-align:center;line-height:1.8">
+        <strong style="color:#0a66c2">How to use OneApply</strong><br/>
+        1. Visit any LinkedIn profile → click <strong>Save Contact</strong><br/>
+        2. Visit any LinkedIn job listing → click <strong>Track This Job</strong><br/>
+        3. See your contacts table here → export to Excel or Google Sheets
+      </div>
+    </div>
+  </div>
+
+  <div id="oa-toast"></div>
+  <script src="ris.js"></script>
+  <script src="sidepanel.js"></script>
+</body>
+</html>

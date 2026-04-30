@@ -1,7 +1,4 @@
-# oneapply-linkedin-extension
-Find your best referral path for every LinkedIn job.
-
-# OneApply - Referral tool for LinkedIn
+# OneApply - Referral Intelligence for LinkedIn
 
 OneApply is a Chrome extension that helps job seekers focus on quality over volume.
 
@@ -109,4 +106,3 @@ To use this feature:
 ## License
 
 Add your preferred license here (for example: MIT).
-
